@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>BeamMP Admin</title>
+  </head>
+  <body>
+
+<h1 style='color:blue'>BeamMP Server Manager!</h1>
+<p>
+    <form action="/changemap" method="post" id="map">
+  <label for="map">Choose a map</label>
+  <select autocomplete="off" id="map" name="maps">
+  {%for option in options%}
+    {% if option == selected %}
+    <option value="{{ option }}" selected> {{option}} </option>
+    {% else %}
+    <option value="{{ option }}"> {{option}} </option>
+    {% endif %}
+  {% endfor %}
+  </select>
+  <input type="submit">
+</form>
+<p>
+<hr>
+<form action="/deletemod" id="mods" method="post">
+  <label for="mods">Delete a mod:</label>
+  <select name="mods" id="mods" multiple>
+    {% for mod in mods %}
+    <option value="{{ mod }}">{{ mod }}</option>
+    {% endfor %}
+  </select>
+  <input type="submit" value="Submit">
+</form>
+<hr>
+<form action="/upload" method="POST" enctype="multipart/form-data">
+  <label for="file">Upload a mod (ZIP FILE ONLY):</label><br>
+  <input type="file" name="file" accept=".zip"><br>
+  <input type="submit" value="Upload">
+</form>
+<hr>
+</p>
+{{ state }}
+<hr>
+<br>BeamNG Logs:
+<br>
+<textarea readonly id="logs" name="logs" rows="10" cols="50">
+
+{{ logs }}
+</textarea>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+  </body>
+</html>
+
+

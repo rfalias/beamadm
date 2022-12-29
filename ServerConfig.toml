@@ -1,0 +1,25 @@
+[HTTP]
+HTTPServerEnabled = false
+UseSSL = false
+HTTPServerIP = "0.0.0.0"
+HTTPServerPort = 8080
+SSLCertPath = "./.ssl/HttpServer/cert.pem"
+SSLKeyPath = "./.ssl/HttpServer/key.pem"
+
+[Misc]
+SendErrorsShowMessage = true
+SendErrors = true
+ImScaredOfUpdates = false
+
+[General]
+Description = "The Server!"
+ResourceFolder = "Resources"
+Map = "/levels/automation_test_track/info.json"
+MaxPlayers = 8
+Port = 30814
+Private = true
+Debug = false
+Name = "ServerName"
+LogChat = true
+MaxCars = 1
+AuthKey = "YourKey"
