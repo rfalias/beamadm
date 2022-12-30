@@ -1,7 +1,3 @@
-# This was made in a night, it's messy and not for real use
-
-# Bunch of random imports
-
 import systemd.daemon
 import os
 import shutil
@@ -13,36 +9,42 @@ import toml
 CONFIG_PATH = "/root/linux/ServerConfig.toml"
 import time
 MOD_PATH = '/root/linux/Resources/Client/'
-
-# Get mod files in the mods dir
 def GetMods():
   return (file for file in os.listdir(MOD_PATH))
 
-# Restart beamng systemd service
+
+
 def RestartServer():
   subprocess.run(["systemctl","restart","beamng"])
 
-# Get server settings toml file
 def GetServerSettings():
   # Read a TOML file
   with open(CONFIG_PATH, "r") as f:
     config = toml.load(f)
   return config
 
-# Get list of maps available from maplist.toml
 def GetMapList():
   with open("maplist.toml", "r") as f:
     maplist = toml.load(f)
   return maplist['maps']
 
-# Find the selected current map from toml
+def GetMapListRaw():
+  with open("maplist.toml", "r") as f:
+    maplist = f.read()
+  return maplist
+
 def MapListToSelectBox():
   settings = GetServerSettings()
   currmap = settings['General']['Map'].split('/')[2]
   print("Current map is " + currmap)
   return currmap
 
-# Write a new map to the toml
+def UpdateMapsToml(data):
+  shutil.copyfile("maplist.toml", "maplist.toml.bak")
+  with open("maplist.toml", "w") as f:
+    f.write(data)
+  time.sleep(1)
+
 def ChangeMapToml(newmap):
   print(f"Changing to {newmap}")
   oldsettings = GetServerSettings()
@@ -57,7 +59,15 @@ def ChangeMapToml(newmap):
   RestartServer()
   return newmapfull
    
-# Get the status of the beamng systemd unit
+
+upload_html = """
+<form action="/upload" method="POST" enctype="multipart/form-data">
+  <label for="file">Select a zip file:</label><br>
+  <input type="file" name="file" accept=".zip"><br>
+  <input type="submit" value="Upload">
+</form>
+"""
+
 def GetServerStatus():
   from pystemd.systemd1 import Unit
   unit = Unit(b'beamng.service')
@@ -67,7 +77,7 @@ def GetServerStatus():
 """
   return(state)
 
-# Read the beamng.service jorunal file
+
 def ReadJournal():
   import systemd.journal
   
@@ -99,19 +109,31 @@ def ReadJournal():
           data += "["
           data += datah
   return data
-  
-# Root page, render templates/index.html
+
+
+def GetFreeSpacePct():
+  total = shutil.disk_usage('/').total
+  free = shutil.disk_usage('/').free
+  pct = (free / total) * 100
+  return int(pct)
+
 @app.route("/" ,methods=['GET'])
 def admin():
-    return render_template('index.html', options=GetMapList(), state=GetServerStatus(), logs=ReadJournal(), selected=MapListToSelectBox(), mods=GetMods())
+    print(f"MAP MAP MAP SELECTED MAP IS: {MapListToSelectBox()}")
+    return render_template('index.html', options=GetMapList(), state=GetServerStatus(), logs=ReadJournal(), selected=MapListToSelectBox(), mods=GetMods(), maplistraw=GetMapListRaw(), freepct=GetFreeSpacePct())
 
-# Post only, change the map
+
 @app.route("/changemap", methods=['POST'])
 def changemap():
+  print("CHANGE MAP TO " + request.form.get('maps'))
   ChangeMapToml(request.form.get('maps'))
   return redirect('/')
 
-# Upload a mod
+@app.route("/editmaps", methods=['POST'])
+def editmap():
+  UpdateMapsToml(request.form.get('editmap'))
+  return redirect('/')
+
 @app.route('/upload', methods=['POST'])
 def upload():
   file = request.files['file']
@@ -126,17 +148,13 @@ def upload():
   else:
     return 'Invalid file type'
 
-# Delete a mod
 def DeleteMod(name):
   os.remove(os.path.join(MOD_PATH,name))
 
-# Delete a mod route
 @app.route('/deletemod', methods=['POST'])
 def deletemod():
   for mod in request.form.getlist('mods'):
     DeleteMod(mod)
   return redirect('/')
-
-# Main entry
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

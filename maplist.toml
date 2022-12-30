@@ -14,3 +14,7 @@ small_island = "/levels/small_island/info.json"
 smallgrid = "/levels/smallgrid/info.json"
 utah = "/levels/utah/info.json"
 west_coast_usa = "/levels/west_coast_usa/info.json"
+car_jump_arena = "/levels/car_jump_arena/car_jump_arena.mis"
+UltimateObstacleCourse = "/levels/UltimateObstacleCourse/info.json"
+Leap-Of-Death = "/levels/Leap-Of-Death/info.json"
+

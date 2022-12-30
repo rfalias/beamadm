@@ -13,6 +13,7 @@
   <body>
 
 <h1 style='color:blue'>BeamMP Server Manager!</h1>
+<h2 style='color:green'> Free Space: {{ freepct }}% </h2>
 <p>
     <form action="/changemap" method="post" id="map">
   <label for="map">Choose a map</label>
@@ -43,6 +44,13 @@
   <label for="file">Upload a mod (ZIP FILE ONLY):</label><br>
   <input type="file" name="file" accept=".zip"><br>
   <input type="submit" value="Upload">
+</form>
+<hr>
+<form action="/editmaps" id="editmaps" method="post">
+<textarea id="editmap" name="editmap" rows="20" cols="80">
+{{ maplistraw }}
+</textarea><br>
+<input type="submit" value="Update Maplist">
 </form>
 <hr>
 </p>
